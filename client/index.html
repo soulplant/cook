@@ -2,7 +2,12 @@
 <script src="script.js"></script>
 
 <body ng-app="app" ng-controller="AppCtrl">
-  <div ng-repeat="item in items">
-    {{item}}
+  <div ng-repeat="recipe in recipes">
+    <input type="checkbox" ng-model="enabled[recipe.id]">{{recipe.name}}</input>
   </div>
+  <ul>
+    <li ng-repeat="i in ingredients">
+      {{i.quantities | quantityList}} {{i.name}}
+    </li>
+  </ul>
 </body>

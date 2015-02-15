@@ -1,5 +1,7 @@
+application: timely-list
 runtime: go
 api_version: go1
+version: auto
 
 handlers:
   - url: /
