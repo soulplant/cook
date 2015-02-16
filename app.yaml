@@ -8,5 +8,11 @@ handlers:
     static_files: client/index.html
     upload: client/index.html
 
-  - url: /
-    static_dir: client/
+  - url: /src/
+    static_dir: client/src
+
+  - url: /bower_components/
+    static_dir: client/bower_components
+
+  - url: /data/
+    static_dir: client/data

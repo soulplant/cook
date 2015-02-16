@@ -1,0 +1,22 @@
+{
+  "name": "timely-list",
+  "version": "0.0.0",
+  "description": "Shopping list generator",
+  "main": "",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+  },
+  "devDependencies": {
+    "karma": "~0.12.31",
+    "jasmine-core": "~2.2.0",
+    "karma-chrome-launcher": "~0.1.7",
+    "karma-jasmine": "~0.3.5"
+  },
+  "scripts": {
+    "test": "karma run"
+  },
+  "author": "",
+  "license": "BSD-2-Clause"
+}

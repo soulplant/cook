@@ -98,29 +98,33 @@ function parseSections(text) {
   return sections;
 }
 
+function parseRecipes(recipesText, measurementsText) {
+  var sections = parseSections(recipesText);
+  var parser = new Parser(measurementsText.split('\n'));
+
+  var recipes = [];
+  for (var i = 0; i < sections.length; i++) {
+    recipes.push({
+      id: i,
+      name: sections[i].header,
+      ingredients: sections[i].parts[1].map(parser.parseIngredient.bind(parser)),
+    });
+  }
+
+  return recipes;
+}
+
 app.controller('AppCtrl', function($scope, $http, $q) {
-  var getRecipes = $http.get('/recipes.txt').then(function(response) {
+  var getRecipes = $http.get('/data/recipes.txt').then(function(response) {
     return response.data;
   });
-  var getMeasurements = $http.get('/measurements.txt').then(function(response) {
+  var getMeasurements = $http.get('/data/measurements.txt').then(function(response) {
     return response.data;
   });
   $q.all([getRecipes, getMeasurements]).then(function(responses) {
     var recipeText = responses[0];
     var measurementsText = responses[1];
-    var sections = parseSections(recipeText);
-    var parser = new Parser(measurementsText.split('\n'));
-
-    var recipes = [];
-    for (var i = 0; i < sections.length; i++) {
-      recipes.push({
-        id: i,
-        name: sections[i].header,
-        ingredients: sections[i].parts[1].map(parser.parseIngredient.bind(parser)),
-      });
-    }
-
-    $scope.recipes = recipes;
+    $scope.recipes = parseRecipes(recipeText, measurementsText);
   });
   $scope.recipes = [];
   $scope.enabled = $scope.recipes.map(function() { return false; });
@@ -128,15 +132,23 @@ app.controller('AppCtrl', function($scope, $http, $q) {
   // Array.<{name: string, quantities: Array.<{0: int, 1: string}>}>
   $scope.ingredients = [];
   $scope.$watch('enabled', function(enabled) {
-    var ingredients = [];
+    var selectedRecipes = [];
     $scope.recipes.map(function(recipe) {
       if (enabled[recipe.id]) {
-        ingredients.push.apply(ingredients, recipe.ingredients);
+        selectedRecipes.push(recipe);
       }
     });
-    $scope.ingredients = mergeIngredients(ingredients);
+    $scope.ingredients = getIngredientList(selectedRecipes);
   }, true);
 });
+
+function getIngredientList(recipes) {
+  var ingredients = [];
+  recipes.forEach(function(recipe) {
+    ingredients.push.apply(ingredients, recipe.ingredients);
+  });
+  return mergeIngredients(ingredients);
+}
 
 function formatQuantity(q) {
   if (q.length == 0) {
