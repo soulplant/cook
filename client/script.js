@@ -1,48 +1,5 @@
 var app = angular.module('app', []);
 
-var testRecipes = [
-  {
-    id: 0,
-    name: 'Tomato Soup',
-    ingredients: [
-      {
-        quantity: [2, 'tbsp'],
-        name: 'olive oil',
-      },
-      {
-        quantity: [4],
-        name: 'tomato',
-      },
-      {
-        quantity: [1, 'bunch'],
-        name: 'basil',
-      },
-    ],
-  },
-  {
-    id: 1,
-    name: 'Comfort Pasta',
-    ingredients: [
-      {
-        quantity: [250, 'g'],
-        name: 'pasta',
-      },
-      {
-        quantity: [150, 'g'],
-        name: 'pasta',
-      },
-      {
-        quantity: [3, 'bunch'],
-        name: 'basil',
-      },
-      {
-        quantity: [2],
-        name: 'tomato',
-      },
-    ],
-  },
-];
-
 function mergeIngredients(ingredients) {
   var m = {};
   ingredients.forEach(function(i) {
@@ -71,12 +28,15 @@ function mergeIngredients(ingredients) {
   });
 }
 
-// [[250, 'g'], [200, 'g'], [1, 'bunch'], [2, 'bunch']]
+// [[250, 'g'], [200, 'g'], [1, 'bunch'], [2, 'bunch'], [], []]
 // ->
-// [[450, 'g'], [3, 'bunch']]
+// [[450, 'g'], [3, 'bunch']]]
 function mergeQuantities(quantitiesList) {
   var m = {};
   quantitiesList.forEach(function(q) {
+    if (q.length == 0) {
+      return;
+    }
     var name = q[1] || '';
     var count = q[0];
     if (m[name] === undefined) {
@@ -91,8 +51,78 @@ function mergeQuantities(quantitiesList) {
   return result;
 }
 
-app.controller('AppCtrl', function($scope) {
-  $scope.recipes = testRecipes;
+function trimHeader(str) {
+  return str.substring(1, str.length - 1).trim();
+}
+
+function parseSections(text) {
+  if (!text) {
+    return;
+  }
+  var lines = text.split('\n');
+  var sections = [];
+  var i = 0;
+  while (true) {
+    while (i < lines.length && lines[i].charAt(0) != '=') {
+      i++;
+    }
+    if (i >= lines.length) {
+      break;
+    }
+    var section = {
+      header: trimHeader(lines[i]),
+      parts: [],
+    };
+    i++;
+
+    while (true) {
+      var buf = [];
+      while (i < lines.length && lines[i] != '') {
+        buf.push(lines[i]);
+        i++;
+      }
+      section.parts.push(buf);
+      if (i >= lines.length) {
+        break;
+      }
+      i++;
+      if (i >= lines.length) {
+        break;
+      }
+      if (lines[i] == '') {
+        break;
+      }
+    }
+    sections.push(section);
+  }
+  return sections;
+}
+
+app.controller('AppCtrl', function($scope, $http, $q) {
+  var getRecipes = $http.get('/recipes.txt').then(function(response) {
+    return response.data;
+  });
+  var getMeasurements = $http.get('/measurements.txt').then(function(response) {
+    return response.data;
+  });
+  $q.all([getRecipes, getMeasurements]).then(function(responses) {
+    var recipeText = responses[0];
+    var measurementsText = responses[1];
+    var sections = parseSections(recipeText);
+    var parser = new Parser(measurementsText.split('\n'));
+
+    var recipes = [];
+    for (var i = 0; i < sections.length; i++) {
+      recipes.push({
+        id: i,
+        name: sections[i].header,
+        ingredients: sections[i].parts[1].map(parser.parseIngredient.bind(parser)),
+      });
+    }
+
+    $scope.recipes = recipes;
+  });
+  $scope.recipes = [];
   $scope.enabled = $scope.recipes.map(function() { return false; });
 
   // Array.<{name: string, quantities: Array.<{0: int, 1: string}>}>
@@ -109,7 +139,18 @@ app.controller('AppCtrl', function($scope) {
 });
 
 function formatQuantity(q) {
-  return q[0] + " " + q[1];
+  if (q.length == 0) {
+    return "";
+  }
+  var num = q[0];
+  var floor = Math.floor(q[0]);
+  if (Math.floor(q[0]) != q[0]) {
+    num = floor + ' 1/2';
+    if (floor == 0) {
+      num = '1/2';
+    }
+  }
+  return num + " " + q[1];
 }
 
 app.filter('quantityList', function() {
@@ -117,3 +158,56 @@ app.filter('quantityList', function() {
     return list.map(formatQuantity).join(', ');
   };
 });
+
+function Parser(measurements) {
+  this.measurements = measurements;
+}
+
+Parser.prototype.isMeasurement = function(word) {
+  return this.measurements.indexOf(word) != -1;
+};
+
+Parser.prototype.parseIngredient = function(line) {
+  if (line == '') {
+    return null;
+  }
+  var words = line.split(' ');
+  if (words.length == 0) {
+    return null;
+  }
+  var number = undefined;
+  var measurement = undefined;
+  if (/^[0-9\/]+$/.test(words[0])) {
+    number = parseNumber(words[0]);
+    words = words.slice(1);
+    if (words.length == 0) {
+      return null;
+    }
+  }
+  if (this.isMeasurement(words[0])) {
+    measurement = words[0];
+    words = words.slice(1);
+    if (words.length == 0) {
+      return null;
+    }
+  }
+  var name = words.join(' ');
+  var quantity = [number];
+  if (measurement) {
+    quantity.push(measurement);
+  }
+  if (number === undefined) {
+    quantity = [];
+  }
+  return {
+    quantity: quantity,
+    name: name,
+  };
+};
+
+function parseNumber(str) {
+  if (str.indexOf('/') != -1) {
+    return eval(str);
+  }
+  return parseInt(str);
+}

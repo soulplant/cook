@@ -1,7 +1,7 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="script.js"></script>
 
-<body ng-app="app" ng-controller="AppCtrl">
+<body ng-app="app" ng-controller="AppCtrl" style="font-family: monospace;">
   <div ng-repeat="recipe in recipes">
     <input type="checkbox" ng-model="enabled[recipe.id]">{{recipe.name}}</input>
   </div>
