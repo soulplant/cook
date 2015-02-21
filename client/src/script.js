@@ -154,15 +154,29 @@ function formatQuantity(q) {
   if (q.length == 0) {
     return "";
   }
-  var num = q[0];
   var floor = Math.floor(q[0]);
-  if (Math.floor(q[0]) != q[0]) {
-    num = floor + ' 1/2';
-    if (floor == 0) {
-      num = '1/2';
-    }
+  var quarters = getQuarters(q[0]);
+  var num = null;
+  switch (quarters) {
+    case 0:
+      num = floor;
+      break;
+    case 1:
+    case 3:
+      num = floor + ' ' + quarters + '/4';
+      break;
+    case 2:
+      num = floor + ' 1/2'
+      break;
+  }
+  if (num == null) {
+    throw "num shouldn't be null";
   }
   return num + " " + q[1];
+}
+
+function getQuarters(x) {
+  return Math.floor((x - Math.floor(x)) * 4);
 }
 
 app.filter('quantityList', function() {
