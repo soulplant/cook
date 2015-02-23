@@ -215,25 +215,28 @@ function formatQuantity(q) {
   if (q.length == 0) {
     return "";
   }
-  var floor = Math.floor(q[0]);
+  var num = Math.floor(q[0]);
   var quarters = getQuarters(q[0]);
-  var num = null;
+  var denom = null;
   switch (quarters) {
     case 0:
-      num = floor;
       break;
     case 1:
     case 3:
-      num = floor + ' ' + quarters + '/4';
+      denom = quarters + '/4';
       break;
     case 2:
-      num = floor + ' 1/2'
+      denom = '1/2'
       break;
   }
-  if (num == null) {
-    throw "num shouldn't be null";
+  var parts = [];
+  if (num != 0) {
+    parts.push(num);
   }
-  return num + " " + q[1];
+  if (denom != null) {
+    parts.push(denom);
+  }
+  return parts.join(' ') + ' ' + q[1];
 }
 
 function getQuarters(x) {

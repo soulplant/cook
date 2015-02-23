@@ -30,6 +30,7 @@ describe('Formatting', function() {
     expect(formatQuantity([2.0, 'kg'])).toEqual('2 kg');
     expect(formatQuantity([2.26, 'kg'])).toEqual('2 1/4 kg');
     expect(formatQuantity([2.5, 'kg'])).toEqual('2 1/2 kg');
+    expect(formatQuantity([0.5, 'kg'])).toEqual('1/2 kg');
   });
 });
 
