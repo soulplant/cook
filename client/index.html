@@ -1,13 +1,27 @@
 <script src="bower_components/angular/angular.js"></script>
 <script src="src/script.js"></script>
 
+<style>
+.source {
+  color: red;
+}
+</style>
+
 <body ng-app="app" ng-controller="AppCtrl" style="font-family: monospace;">
   <div ng-repeat="recipe in recipes">
     <input type="checkbox" ng-model="enabled[recipe.id]">{{recipe.name}}</input>
   </div>
+  <br />
+  <input type="checkbox" ng-model="showSource">Show source</input>
   <ul>
     <li ng-repeat="i in ingredients">
-      {{i.quantities | quantityList}} {{i.name}}
+    {{i.quantities | quantityList}} {{i.name}} <span class="source">{{showSource ? i.note : ''}}</span>
+    </li>
+    <li ng-show="selectedRecipes.length > 0 && showSource">
+      = Recipes =
+    </li>
+    <li ng-show="showSource" ng-repeat="r in selectedRecipes">
+      <span class="source">{{r | shortRecipeName}}</span> {{r.name}}
     </li>
   </ul>
 </body>

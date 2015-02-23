@@ -1,29 +1,47 @@
 var app = angular.module('app', []);
 
-function mergeIngredients(ingredients) {
+function uniq(xs) {
   var m = {};
+  for (var i = 0; i < xs.length; i++) {
+    m[xs[i]] = xs[i];
+  }
+  var result = [];
+  for (var key in m) {
+    result.push(m[key]);
+  }
+  result.sort();
+  return result;
+}
+
+function mergeIngredients(ingredients) {
+  var byName = {};
   ingredients.forEach(function(i) {
-    var existing = m[i.name];
-    if (m[i.name] == undefined) {
-      m[i.name] = [];
+    var existing = byName[i.name];
+    if (byName[i.name] == undefined) {
+      byName[i.name] = [];
     }
-    m[i.name].push(i);
+    byName[i.name].push(i);
   });
   var result = [];
-  for (var k in m) {
-    var ingredientList = m[k];
+  for (var name in byName) {
+    var ingredientList = byName[name];
     var qs = ingredientList.map(function(i) {
       return i.quantity;
     });
+    var recipes = ingredientList.map(function(i) {
+      return i.recipe;
+    });
     result.push({
-      name: k,
+      name: name,
       quantities: qs,
+      recipes: recipes,
     });
   }
   return result.map(function(r) {
     return {
       name: r.name,
       quantities: mergeQuantities(r.quantities),
+      recipes: uniq(r.recipes),
     };
   });
 }
@@ -114,7 +132,8 @@ function parseRecipes(recipesText, measurementsText) {
   return recipes;
 }
 
-function ListMaker(aislesText) {
+function ListMaker(recipes, aislesText) {
+  this.recipes = recipes;
   var sections = parseSections(aislesText);
   this.aisles = {};
   this.aisleNames = sections.map(function(section) { return section.header; });
@@ -126,6 +145,31 @@ function ListMaker(aislesText) {
       self.aisles[ingredient] = section.header;
     });
   });
+}
+
+function allCaps(str) {
+  for (var i = 0; i < str.length; i++) {
+    if ('A' > str.charAt(i) || str.charAt(i) > 'Z') {
+      return false;
+    }
+  }
+  return true;
+}
+
+function startsWithCap(str) {
+  return allCaps(str.charAt(0));
+}
+
+function getShortName(string) {
+  var words = string.split(' ');
+  if (words.length == 1 && allCaps(words[0])) {
+    return words[0];
+  }
+  return words.filter(function(word) {
+    return startsWithCap(word);
+  }).map(function(word) {
+    return word.charAt(0);
+  }).join('');
 }
 
 ListMaker.prototype.makeList = function(ingredients) {
@@ -152,6 +196,16 @@ ListMaker.prototype.makeList = function(ingredients) {
         }
       });
       results.push({name: '= ' + aisle + ' =', quantities: []});
+      var self = this;
+      ingredientsInAisle.forEach(function(i) {
+        var shortNames = i.recipes.map(function(recipeId) {
+          return getShortName(self.recipes[recipeId].name);
+        });
+        i.note = '';
+        if (shortNames.length > 0) {
+          i.note = '[' + shortNames.join(',') + ']';
+        }
+      });
       results.push.apply(results, ingredientsInAisle);
     }
   }
@@ -177,15 +231,17 @@ app.controller('AppCtrl', function($scope, $http, $q) {
     var measurementsText = responses[1];
     var aisles = responses[2];
     $scope.recipes = parseRecipes(recipeText, measurementsText);
-    listMaker = new ListMaker(aisles);
+    listMaker = new ListMaker($scope.recipes, aisles);
     refreshList();
   });
   $scope.recipes = [];
   $scope.enabled = $scope.recipes.map(function() { return false; });
+  $scope.selectedRecipes = [];
+  $scope.showSource = false;
 
   $scope.aisleLookup = {};
 
-  // Array.<{name: string, quantities: Array.<{0: int, 1: string}>}>
+  // Array.<{name: string, quantities: Array.<{0: int, 1: string}>, recipe: int}>
   $scope.ingredients = [];
   $scope.$watch('enabled', refreshList, true);
 
@@ -193,22 +249,30 @@ app.controller('AppCtrl', function($scope, $http, $q) {
     if (!listMaker) {
       return;
     }
-    var selectedRecipes = [];
+    $scope.selectedRecipes = [];
     $scope.recipes.map(function(recipe) {
       if ($scope.enabled[recipe.id]) {
-        selectedRecipes.push(recipe);
+        $scope.selectedRecipes.push(recipe);
       }
     });
-    $scope.ingredients = listMaker.makeList(getIngredientList(selectedRecipes));
+    $scope.ingredients = listMaker.makeList(getIngredientList($scope.selectedRecipes));
   }
 });
 
+function tagIngredientWithSource(ingredient, recipe) {
+  var copy = angular.copy(ingredient);
+  copy.recipe = recipe.id;
+  return copy;
+}
+
 function getIngredientList(recipes) {
-  var ingredients = [];
+  var result = [];
   recipes.forEach(function(recipe) {
-    ingredients.push.apply(ingredients, recipe.ingredients);
+    recipe.ingredients.forEach(function(ingredient) {
+      result.push(tagIngredientWithSource(ingredient, recipe));
+    });
   });
-  return mergeIngredients(ingredients);
+  return mergeIngredients(result);
 }
 
 function formatQuantity(q) {
@@ -246,6 +310,12 @@ function getQuarters(x) {
 app.filter('quantityList', function() {
   return function(list) {
     return list.map(formatQuantity).join(', ');
+  };
+});
+
+app.filter('shortRecipeName', function() {
+  return function(recipe) {
+    return getShortName(recipe.name);
   };
 });
 
