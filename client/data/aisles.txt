@@ -1,0 +1,88 @@
+= Fresh =
+celery
+cherry tomato
+cucumber
+garlic
+ginger
+large tomato
+lettuce
+lime
+onion
+potato
+red chili
+red onion
+small red onion
+tomato
+
+
+= Bread =
+breadstick
+ciabatta
+ciabatta loaf
+
+
+= Herbs =
+basil
+basil leaves
+coriander
+mint
+rosemary
+
+
+= Meat =
+180g skinless chicken breast
+bacon
+chicken breast
+steak
+
+
+= Dairy =
+butter
+cheese
+creme fraiche
+double cream
+feta cheese
+milk
+parmesan cheese
+
+
+= Tinned =
+tinned tomato
+
+
+= Condiments =
+fish sauce
+mayonnaise
+peanut butter
+runny honey
+salad dressing
+soy sauce
+
+
+= Pasta / Rice =
+dried medium egg noodle
+pasta
+rice
+spaghetti
+
+
+= Nuts =
+unsalted cashew
+
+
+= Cooking Needs =
+balsamic vinegar
+extra virgin olive oil
+olive oil
+pepper
+salt
+sesame oil
+vegetable stock
+
+
+= Frozen =
+frozen peas
+
+
+= Misc =
+skewers

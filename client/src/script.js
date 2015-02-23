@@ -114,32 +114,93 @@ function parseRecipes(recipesText, measurementsText) {
   return recipes;
 }
 
+function ListMaker(aislesText) {
+  var sections = parseSections(aislesText);
+  this.aisles = {};
+  this.aisleNames = sections.map(function(section) { return section.header; });
+
+  var self = this;
+
+  sections.forEach(function(section) {
+    section.parts[0].forEach(function(ingredient) {
+      self.aisles[ingredient] = section.header;
+    });
+  });
+}
+
+ListMaker.prototype.makeList = function(ingredients) {
+  var byAisle = {};
+  for (var i = 0; i < ingredients.length; i++) {
+    var aisle = this.aisles[ingredients[i].name];
+    if (!byAisle[aisle]) {
+      byAisle[aisle] = [];
+    }
+    byAisle[aisle].push(ingredients[i]);
+  }
+  var results = [];
+  for (var i = 0; i < this.aisleNames.length; i++) {
+    var aisle = this.aisleNames[i];
+    var ingredientsInAisle = byAisle[aisle];
+    if (ingredientsInAisle) {
+      ingredientsInAisle.sort(function(l, r) {
+        if (l.name < r.name) {
+          return 0;
+        } else if (l.name == r.name) {
+          return 0;
+        } else {
+          return 1;
+        }
+      });
+      results.push({name: '= ' + aisle + ' =', quantities: []});
+      results.push.apply(results, ingredientsInAisle);
+    }
+  }
+  return results;
+};
+
 app.controller('AppCtrl', function($scope, $http, $q) {
-  var getRecipes = $http.get('/data/recipes.txt').then(function(response) {
-    return response.data;
-  });
-  var getMeasurements = $http.get('/data/measurements.txt').then(function(response) {
-    return response.data;
-  });
-  $q.all([getRecipes, getMeasurements]).then(function(responses) {
+  function fetch(name) {
+    return $http.get('/data/' + name + '.txt').then(function(response) {
+      return response.data;
+    });
+  }
+
+  var listMaker = null;
+
+  var fetches = [
+    fetch('recipes'),
+    fetch('measurements'),
+    fetch('aisles')
+  ];
+  $q.all(fetches).then(function(responses) {
     var recipeText = responses[0];
     var measurementsText = responses[1];
+    var aisles = responses[2];
     $scope.recipes = parseRecipes(recipeText, measurementsText);
+    listMaker = new ListMaker(aisles);
+    refreshList();
   });
   $scope.recipes = [];
   $scope.enabled = $scope.recipes.map(function() { return false; });
 
+  $scope.aisleLookup = {};
+
   // Array.<{name: string, quantities: Array.<{0: int, 1: string}>}>
   $scope.ingredients = [];
-  $scope.$watch('enabled', function(enabled) {
+  $scope.$watch('enabled', refreshList, true);
+
+  function refreshList() {
+    if (!listMaker) {
+      return;
+    }
     var selectedRecipes = [];
     $scope.recipes.map(function(recipe) {
-      if (enabled[recipe.id]) {
+      if ($scope.enabled[recipe.id]) {
         selectedRecipes.push(recipe);
       }
     });
-    $scope.ingredients = getIngredientList(selectedRecipes);
-  }, true);
+    $scope.ingredients = listMaker.makeList(getIngredientList(selectedRecipes));
+  }
 });
 
 function getIngredientList(recipes) {
