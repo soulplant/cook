@@ -5,23 +5,67 @@
 .source {
   color: red;
 }
+.source.label {
+  margin-left: 0.5em;
+}
+.header {
+  font-weight: bold;
+  margin-top: 0.7em;
+  color: #000;
+}
+.header.top {
+  margin-top: 0em;
+}
+ul {
+  display: inline-block;
+}
+li {
+  color: #555;
+}
+.recipe {
+  text-align: right;
+}
+.recipe-list {
+  display: inline-block;
+  vertical-align: top;
+}
+.recipe-list label {
+  text-align: center;
+}
+.ingredient-list {
+  margin: 0;
+  padding: 0;
+  padding-left: 1em;
+  display: inline-block;
+}
+li {
+  list-style-type: none;
+}
+input[type=checkbox] {
+  position: relative;
+  top: 3px;
+}
 </style>
 
 <body ng-app="app" ng-controller="AppCtrl" style="font-family: monospace;">
-  <div ng-repeat="recipe in recipes">
-    <input type="checkbox" ng-model="enabled[recipe.id]">{{recipe.name}}</input>
+  <div class="recipe-list">
+    <div ng-repeat="recipe in recipes" class="recipe">
+      <label>{{recipe.name}}<input type="checkbox" ng-model="enabled[recipe.id]"></input></label>
+    </div>
+    <br />
+    <div class="recipe">
+      <label>Show source<input type="checkbox" ng-model="showSource"></input></label>
+    </div>
   </div>
-  <br />
-  <input type="checkbox" ng-model="showSource">Show source</input>
-  <ul>
-    <li ng-repeat="i in ingredients">
-    {{i.quantities | quantityList}} {{i.name}} <span class="source">{{showSource ? i.note : ''}}</span>
+  <ul class="ingredient-list">
+    <li ng-repeat="i in ingredients" ng-class="{top: $first, header: i.header}">
+      {{i.quantities | quantityList}} {{i.name}}<span class="source label">{{showSource ? i.note : ''}}</span>
     </li>
-    <li ng-show="selectedRecipes.length > 0 && showSource">
-      = Recipes =
+    <li ng-show="selectedRecipes.length > 0 && showSource" class="header">
+      Recipes
     </li>
     <li ng-show="showSource" ng-repeat="r in selectedRecipes">
-      <span class="source">{{r | shortRecipeName}}</span> {{r.name}}
+      <span class="source">[{{r | shortRecipeName}}]</span> {{r.name}}
     </li>
   </ul>
 </body>

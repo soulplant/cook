@@ -195,7 +195,7 @@ ListMaker.prototype.makeList = function(ingredients) {
           return 1;
         }
       });
-      results.push({name: '= ' + aisle + ' =', quantities: []});
+      results.push({name: aisle, header: true});
       var self = this;
       ingredientsInAisle.forEach(function(i) {
         var shortNames = i.recipes.map(function(recipeId) {
@@ -209,6 +209,7 @@ ListMaker.prototype.makeList = function(ingredients) {
       results.push.apply(results, ingredientsInAisle);
     }
   }
+  // Array.<{name: string, header: ?bool, quantities: ?Array<{0: int, 1: string}>}>
   return results;
 };
 
@@ -235,7 +236,7 @@ app.controller('AppCtrl', function($scope, $http, $q) {
     refreshList();
   });
   $scope.recipes = [];
-  $scope.enabled = $scope.recipes.map(function() { return false; });
+  $scope.enabled = [];
   $scope.selectedRecipes = [];
   $scope.showSource = false;
 
@@ -300,7 +301,10 @@ function formatQuantity(q) {
   if (denom != null) {
     parts.push(denom);
   }
-  return parts.join(' ') + ' ' + q[1];
+  if (q[1]) {
+    parts.push(q[1]);
+  }
+  return parts.join(' ');
 }
 
 function getQuarters(x) {
@@ -309,6 +313,9 @@ function getQuarters(x) {
 
 app.filter('quantityList', function() {
   return function(list) {
+    if (!list) {
+      return '';
+    }
     return list.map(formatQuantity).join(', ');
   };
 });
