@@ -4,9 +4,9 @@
 <style>
 .source {
   color: red;
+  text-transform: lowercase;
 }
 .source.label {
-  margin-left: 0.5em;
 }
 .header {
   font-weight: bold;
@@ -59,10 +59,10 @@ input[type=checkbox] {
   </div>
   <ul class="ingredient-list">
     <li ng-repeat="i in ingredients" ng-class="{top: $first, header: i.header}">
-      {{i.quantities | quantityList}} {{i.name}}<span class="source label">{{showSource ? i.note : ''}}</span>
+    <span ng-show="i.header">=</span>{{i.quantities | quantityList}} {{i.name}}<span ng-show="i.header"> =</span><span class="source label"> {{showSource && !i.header ? '[' + i.note + ']' : ''}}</span>
     </li>
     <li ng-show="selectedRecipes.length > 0 && showSource" class="header">
-      Recipes
+      = Recipes =
     </li>
     <li ng-show="showSource" ng-repeat="r in selectedRecipes">
       <span class="source">[{{r | shortRecipeName}}]</span> {{r.name}}
