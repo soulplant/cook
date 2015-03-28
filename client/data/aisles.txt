@@ -1,10 +1,15 @@
 = Fresh =
+cauliflower
 celery
 cherry tomato
 cucumber
+egg
+eggplant
+eggs
 garlic
 ginger
 large tomato
+lemon
 lettuce
 lime
 onion
@@ -13,12 +18,19 @@ red chili
 red onion
 small red onion
 tomato
+capsicum
+red capsicum
+yellow capsicum
+zucchini
 
 
 = Bread =
+bread
 breadstick
 ciabatta
 ciabatta loaf
+fruit loaf
+naan bread
 
 
 = Herbs =
@@ -27,6 +39,7 @@ basil leaves
 coriander
 mint
 rosemary
+thyme
 
 
 = Meat =
@@ -34,6 +47,7 @@ rosemary
 bacon
 chicken breast
 steak
+beef strips
 
 
 = Dairy =
@@ -43,11 +57,14 @@ creme fraiche
 double cream
 feta cheese
 milk
-parmesan cheese
+parmesan
+natural yoghurt
 
 
 = Tinned =
 tinned tomato
+passata
+anchovy fillet
 
 
 = Condiments =
@@ -64,6 +81,18 @@ dried medium egg noodle
 pasta
 rice
 spaghetti
+lasagne sheet
+dried medium egg noodle
+
+
+= Sauces / Powders =
+butter chicken curry sauce
+hoisin sauce
+sambal oleck
+saffron
+
+= Breakfast =
+cereal
 
 
 = Nuts =
