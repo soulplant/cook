@@ -134,9 +134,10 @@ function parseRecipes(recipesText, measurementsText) {
 
 function ListMaker(recipes, aislesText) {
   this.recipes = recipes;
-  var sections = parseSections(aislesText);
   this.aisles = {};
+  var sections = parseSections(aislesText);
   this.aisleNames = sections.map(function(section) { return section.header; });
+  this.aisleNames.push('Other');
 
   var self = this;
 
@@ -176,6 +177,9 @@ ListMaker.prototype.makeList = function(ingredients) {
   var byAisle = {};
   for (var i = 0; i < ingredients.length; i++) {
     var aisle = this.aisles[ingredients[i].name];
+    if (!aisle) {
+      aisle = 'Other';
+    }
     if (!byAisle[aisle]) {
       byAisle[aisle] = [];
     }
@@ -203,7 +207,7 @@ ListMaker.prototype.makeList = function(ingredients) {
         });
         i.note = '';
         if (shortNames.length > 0) {
-          i.note = '[' + shortNames.join(',') + ']';
+          i.note = shortNames.join(', ');
         }
       });
       results.push.apply(results, ingredientsInAisle);
