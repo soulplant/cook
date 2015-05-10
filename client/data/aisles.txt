@@ -2,6 +2,7 @@
 cauliflower
 celery
 cherry tomato
+carrot
 cucumber
 egg
 eggplant
@@ -22,6 +23,7 @@ capsicum
 red capsicum
 yellow capsicum
 zucchini
+sweet potato
 
 
 = Bread =
@@ -40,6 +42,7 @@ coriander
 mint
 rosemary
 thyme
+parsley
 
 
 = Meat =
@@ -93,6 +96,8 @@ butter chicken curry sauce
 hoisin sauce
 sambal oleck
 saffron
+chicken or vegetable stock cube
+curry powder
 
 = Breakfast =
 cereal
@@ -111,6 +116,9 @@ salt
 sesame oil
 vegetable stock
 
+
+= Cured Meat =
+chorizo
 
 = Frozen =
 frozen peas
