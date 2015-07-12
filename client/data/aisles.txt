@@ -24,6 +24,11 @@ red capsicum
 yellow capsicum
 zucchini
 sweet potato
+sugar snap peas
+mixed mushrooms
+mushrooms
+bok choi
+spring onion
 
 
 = Bread =
@@ -51,6 +56,8 @@ bacon
 chicken breast
 steak
 beef strips
+mince
+beef mince
 
 
 = Dairy =
@@ -71,6 +78,7 @@ anchovy fillet
 can tuna in oil
 sliced pitted black olives
 capers
+water chestnuts
 
 
 = Condiments =
@@ -80,10 +88,12 @@ peanut butter
 runny honey
 salad dressing
 soy sauce
+black bean sauce
 
 
 = Pasta / Rice =
 dried medium egg noodle
+egg noodles
 fettucine
 lasagne sheet
 pasta
@@ -97,6 +107,8 @@ hoisin sauce
 sambal oleck
 saffron
 chicken or vegetable stock cube
+chicken stock cube
+vegetable stock cube
 curry powder
 
 = Breakfast =
@@ -114,6 +126,7 @@ olive oil
 pepper
 salt
 sesame oil
+sesame seeds
 vegetable stock
 
 
