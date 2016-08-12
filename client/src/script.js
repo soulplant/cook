@@ -111,10 +111,13 @@ function parseRecipes(recipesText, measurementsText) {
     var parser = new Parser(measurementsText.split('\n'));
     var recipes = [];
     for (var i = 0; i < sections.length; i++) {
+        var parseIngredient = function (line) {
+            return parser.parseIngredient(line);
+        };
         recipes.push({
             id: i,
             name: sections[i].header,
-            ingredients: sections[i].parts[1].map(parser.parseIngredient.bind(parser)),
+            ingredients: sections[i].parts[1].map(parseIngredient),
         });
     }
     return recipes;

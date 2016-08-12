@@ -2,12 +2,38 @@
 
 var app = angular.module('app', []);
 
-function uniq(xs) {
-  var m = {};
+interface Ingredient {
+  name: string
+  quantity: Quantity
+  recipe?: number
+}
+
+interface IngredientList {
+  name: string
+  quantities: Quantity[]
+  recipes: number[]
+}
+
+interface Recipe {
+  id: number
+  name: string
+  ingredients: Ingredient[]
+}
+
+interface Section {
+  header: string
+  parts: string[][]
+}
+
+// TODO: Make this a non-tuple type.
+type Quantity = [number, string] | undefined[];
+
+function uniq(xs : number[]): number[] {
+  var m: {[word: number]: number} = {};
   for (var i = 0; i < xs.length; i++) {
     m[xs[i]] = xs[i];
   }
-  var result = [];
+  var result: number[] = [];
   for (var key in m) {
     result.push(m[key]);
   }
@@ -15,8 +41,8 @@ function uniq(xs) {
   return result;
 }
 
-function mergeIngredients(ingredients) {
-  var byName = {};
+function mergeIngredients(ingredients : Ingredient[]): IngredientList[] {
+  var byName: {[name: string]: Ingredient[]} = {};
   ingredients.forEach(function(i) {
     var existing = byName[i.name];
     if (byName[i.name] == undefined) {
@@ -24,7 +50,7 @@ function mergeIngredients(ingredients) {
     }
     byName[i.name].push(i);
   });
-  var result = [];
+  var result: IngredientList[] = [];
   for (var name in byName) {
     var ingredientList = byName[name];
     var qs = ingredientList.map(function(i) {
@@ -51,7 +77,7 @@ function mergeIngredients(ingredients) {
 // [[250, 'g'], [200, 'g'], [1, 'bunch'], [2, 'bunch'], [], []]
 // ->
 // [[450, 'g'], [3, 'bunch']]]
-function mergeQuantities(quantitiesList) {
+function mergeQuantities(quantitiesList: Quantity[]): Quantity[] {
   var m = {};
   quantitiesList.forEach(function(q) {
     if (q.length == 0) {
@@ -71,11 +97,11 @@ function mergeQuantities(quantitiesList) {
   return result;
 }
 
-function trimHeader(str) {
+function trimHeader(str: string): string {
   return str.substring(1, str.length - 1).trim();
 }
 
-function parseSections(text) {
+function parseSections(text: string): Section[] {
   if (!text) {
     return;
   }
@@ -89,7 +115,7 @@ function parseSections(text) {
     if (i >= lines.length) {
       break;
     }
-    var section = {
+    var section: Section = {
       header: trimHeader(lines[i]),
       parts: [],
     };
@@ -118,16 +144,22 @@ function parseSections(text) {
   return sections;
 }
 
-function parseRecipes(recipesText, measurementsText) {
+function parseRecipes(recipesText: string, measurementsText: string): Recipe[] {
   var sections = parseSections(recipesText);
   var parser = new Parser(measurementsText.split('\n'));
 
-  var recipes = [];
+  var recipes: Recipe[] = [];
   for (var i = 0; i < sections.length; i++) {
+    // TODO: Convert parser to a class so we know the type of
+    // parser.parseIngredient and can avoid this indirection.
+    var parseIngredient: (line: string) => Ingredient =
+        function(line: string): Ingredient {
+          return parser.parseIngredient(line);
+        };
     recipes.push({
       id: i,
       name: sections[i].header,
-      ingredients: sections[i].parts[1].map(parser.parseIngredient.bind(parser)),
+      ingredients: sections[i].parts[1].map(parseIngredient),
     });
   }
 
@@ -150,7 +182,7 @@ function ListMaker(recipes, aislesText) {
   });
 }
 
-function allCaps(str) {
+function allCaps(str: string): boolean {
   for (var i = 0; i < str.length; i++) {
     if ('A' > str.charAt(i) || str.charAt(i) > 'Z') {
       return false;
@@ -159,11 +191,11 @@ function allCaps(str) {
   return true;
 }
 
-function startsWithCap(str) {
+function startsWithCap(str: string): boolean {
   return allCaps(str.charAt(0));
 }
 
-function getShortName(string) {
+function getShortName(string: string): string {
   var words = string.split(' ');
   if (words.length == 1 && allCaps(words[0])) {
     return words[0];
@@ -175,8 +207,8 @@ function getShortName(string) {
   }).join('');
 }
 
-ListMaker.prototype.makeList = function(ingredients) {
-  var byAisle = {};
+ListMaker.prototype.makeList = function(ingredients: any[]) {
+  var byAisle: {[name: string]: any[]} = {};
   for (var i = 0; i < ingredients.length; i++) {
     var aisle = this.aisles[ingredients[i].name];
     if (!aisle) {
@@ -266,13 +298,13 @@ app.controller('AppCtrl', function($scope, $http, $q) {
   }
 });
 
-function tagIngredientWithSource(ingredient, recipe) {
+function tagIngredientWithSource(ingredient: Ingredient, recipe: Recipe): Ingredient {
   var copy = angular.copy(ingredient);
   copy.recipe = recipe.id;
   return copy;
 }
 
-function getIngredientList(recipes) {
+function getIngredientList(recipes: Recipe[]): IngredientList[] {
   var result = [];
   recipes.forEach(function(recipe) {
     recipe.ingredients.forEach(function(ingredient) {
@@ -340,7 +372,7 @@ Parser.prototype.isMeasurement = function(word) {
   return this.measurements.indexOf(word) != -1;
 };
 
-Parser.prototype.parseIngredient = function(line) {
+Parser.prototype.parseIngredient = function(line: string): Ingredient {
   if (line == '') {
     return null;
   }
