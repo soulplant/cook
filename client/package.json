@@ -7,6 +7,7 @@
     "test": "tests"
   },
   "dependencies": {
+    "ts-loader": "^0.8.2"
   },
   "devDependencies": {
     "karma": "~0.12.31",

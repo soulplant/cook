@@ -15,19 +15,13 @@
         "preserveConstEnums": true,
         "suppressImplicitAnyIndexErrors": true
     },
+    "compileOnSave": false,
+    "buildOnSave": false,
     "exclude": [
         "node_modules",
         "typings/browser",
         "typings/browser.d.ts"
     ],
-    "files": [
-      "script.ts",
-      "thing.ts",
-      "parser.ts",
-      "types.ts"
-    ],
-    "compileOnSave": false,
-    "buildOnSave": false,
     "atom": {
         "rewriteTsconfig": false
     }
