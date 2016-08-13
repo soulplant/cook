@@ -1,7 +1,10 @@
 module.exports = {
-  entry: './parseTest.ts',
+  entry: {
+    parseTest: './parseTest.ts',
+    scriptTest: './scriptTest.ts',
+  },
   output: {
-    filename: 'parseTest.js'
+    filename: '[name].js'
   },
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']

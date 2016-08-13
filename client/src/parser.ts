@@ -69,6 +69,7 @@ export function parseRecipes(recipesText: string, measurementsText: string): Rec
   return recipes;
 }
 
+// Visible for testing.
 export function Parser(measurements) {
   this.measurements = measurements;
 }
@@ -115,6 +116,7 @@ Parser.prototype.parseIngredient = function(line: string): Ingredient {
   };
 };
 
+// Visible for testing.
 export function parseNumber(str) {
   if (str.indexOf('/') != -1) {
     return eval(str);
