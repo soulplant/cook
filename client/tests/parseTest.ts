@@ -55,6 +55,8 @@ describe('Integration', function() {
   it('Parses data from the server correctly', function() {
     expect(recipes.length).toEqual(2);
     expect(recipes[0].name).toEqual('Tomato Soup');
+    expect(recipes[0].ingredients.length).toEqual(4);
     expect(recipes[1].name).toEqual('Tinned Tomatoes');
+    expect(recipes[1].ingredients.length).toEqual(3);
   });
 });
