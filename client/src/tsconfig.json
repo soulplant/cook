@@ -20,12 +20,6 @@
         "typings/browser",
         "typings/browser.d.ts"
     ],
-    "files": [
-      "script.ts",
-      "thing.ts",
-      "parser.ts",
-      "types.ts"
-    ],
     "compileOnSave": false,
     "buildOnSave": false,
     "atom": {

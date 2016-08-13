@@ -4,7 +4,7 @@ module.exports = {
     scriptTest: './scriptTest.ts',
   },
   output: {
-    filename: '[name].js'
+    filename: '[name].bundle.js'
   },
   resolve: {
     extensions: ['', '.webpack.js', '.web.js', '.ts', '.js']
