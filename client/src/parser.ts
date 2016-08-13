@@ -103,21 +103,18 @@ Parser.prototype.parseIngredient = function(line: string): Ingredient {
     }
   }
   var name = words.join(' ');
-  var quantity = [number];
-  if (measurement) {
-    quantity.push(measurement);
-  }
-  if (number === undefined) {
-    quantity = [];
+  var quantity: Quantity = [];
+  if (number !== undefined && measurement) {
+    quantity = [number, measurement];
   }
   return {
-    quantity: (<Quantity>quantity),
+    quantity: quantity,
     name: name,
   };
 };
 
 // Visible for testing.
-export function parseNumber(str) {
+export function parseNumber(str: string): number {
   if (str.indexOf('/') != -1) {
     return eval(str);
   }
