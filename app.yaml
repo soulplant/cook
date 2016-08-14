@@ -16,3 +16,14 @@ handlers:
 
   - url: /data/
     static_dir: client/data
+
+skip_files:
+  - ^(.*/)?#.*#$
+  - ^(.*/)?.*~$
+  - ^(.*/)?.*\.py[co]$
+  - ^(.*/)?.*/RCS/.*$
+  - ^(.*/)?\..*$
+  - ^client/src/typings/.*$
+  - ^client/src/.*\.ts$
+  - ^client/src/.*\.json$
+  - ^client/src/webpack\.config\.js$
