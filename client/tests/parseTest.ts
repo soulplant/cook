@@ -16,7 +16,7 @@ describe('Parser', function() {
 
   var parser = new Parser(measurements);
   it('parses ingredients', function() {
-    var cases = [
+    var cases: [string, any][] = [
       ['3 kg tomato', {quantity: [3, 'kg'], name: 'tomato'}],
       ['15 g chili flakes', {quantity: [15, 'g'], name: 'chili flakes'}],
       ['salt', {quantity: [], name: 'salt'}],

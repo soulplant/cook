@@ -70,48 +70,51 @@ export function parseRecipes(recipesText: string, measurementsText: string): Rec
 }
 
 // Visible for testing.
-export function Parser(measurements) {
-  this.measurements = measurements;
+export class Parser {
+  measurements: string[];
+  constructor(measurements: string[]) {
+    this.measurements = measurements;
+  }
+
+  isMeasurement(word: string): boolean {
+    return this.measurements.indexOf(word) != -1;
+  }
+
+  parseIngredient(line: string): Ingredient {
+    if (line == '') {
+      return null;
+    }
+    var words = line.split(' ');
+    if (words.length == 0) {
+      return null;
+    }
+    var number = undefined;
+    var measurement = undefined;
+    if (/^[0-9\/]+$/.test(words[0])) {
+      number = parseNumber(words[0]);
+      words = words.slice(1);
+      if (words.length == 0) {
+        return null;
+      }
+    }
+    if (this.isMeasurement(words[0])) {
+      measurement = words[0];
+      words = words.slice(1);
+      if (words.length == 0) {
+        return null;
+      }
+    }
+    var name = words.join(' ');
+    var quantity: Quantity = [];
+    if (number !== undefined && measurement) {
+      quantity = [number, measurement];
+    }
+    return {
+      quantity: quantity,
+      name: name,
+    };
+  }
 }
-
-Parser.prototype.isMeasurement = function(word) {
-  return this.measurements.indexOf(word) != -1;
-};
-
-Parser.prototype.parseIngredient = function(line: string): Ingredient {
-  if (line == '') {
-    return null;
-  }
-  var words = line.split(' ');
-  if (words.length == 0) {
-    return null;
-  }
-  var number = undefined;
-  var measurement = undefined;
-  if (/^[0-9\/]+$/.test(words[0])) {
-    number = parseNumber(words[0]);
-    words = words.slice(1);
-    if (words.length == 0) {
-      return null;
-    }
-  }
-  if (this.isMeasurement(words[0])) {
-    measurement = words[0];
-    words = words.slice(1);
-    if (words.length == 0) {
-      return null;
-    }
-  }
-  var name = words.join(' ');
-  var quantity: Quantity = [];
-  if (number !== undefined && measurement) {
-    quantity = [number, measurement];
-  }
-  return {
-    quantity: quantity,
-    name: name,
-  };
-};
 
 // Visible for testing.
 export function parseNumber(str: string): number {
