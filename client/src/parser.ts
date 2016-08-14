@@ -49,7 +49,7 @@ export function parseSections(text: string): Section[] {
 
 export function parseRecipes(recipesText: string, measurementsText: string): Recipe[] {
   var sections = parseSections(recipesText);
-  var parser = new Parser(measurementsText.split('\n'));
+  var parser = new IngredientParser(measurementsText.split('\n'));
 
   var recipes: Recipe[] = [];
   for (var i = 0; i < sections.length; i++) {
@@ -70,7 +70,7 @@ export function parseRecipes(recipesText: string, measurementsText: string): Rec
 }
 
 // Visible for testing.
-export class Parser {
+export class IngredientParser {
   measurements: string[];
   constructor(measurements: string[]) {
     this.measurements = measurements;

@@ -1,6 +1,6 @@
 /// <reference path="typings/jasmine/jasmine.d.ts" />
 
-import { parseNumber, Parser, parseRecipes } from '../src/parser';
+import { parseNumber, IngredientParser, parseRecipes } from '../src/parser';
 
 describe('parseNumber', function() {
   it('handles halves', function() {
@@ -14,7 +14,7 @@ describe('Parser', function() {
     'kg',
   ];
 
-  var parser = new Parser(measurements);
+  var parser = new IngredientParser(measurements);
   it('parses ingredients', function() {
     var cases: [string, any][] = [
       ['3 kg tomato', {quantity: [3, 'kg'], name: 'tomato'}],
