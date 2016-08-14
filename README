@@ -1,0 +1,11 @@
+You will need the Go App Engine SDK.
+
+To update the instance running at timely-list.appspot.com
+
+  appcfg.py update .
+
+To run a local dev instance
+
+  goapp serve .
+
+This will bring up the server on localhost:8080, and the app engine console on localhost:8000.
