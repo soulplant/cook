@@ -7,6 +7,15 @@
   "installed": {
     "jasmine/jasmine.d.ts": {
       "commit": "5d16f273a32c1c204c66e2ad3d68534650aca30b"
+    },
+    "angularjs/angular.d.ts": {
+      "commit": "81d739cd5a3b367502dbcb7453a1b594bf95b8e3"
+    },
+    "jquery/jquery.d.ts": {
+      "commit": "81d739cd5a3b367502dbcb7453a1b594bf95b8e3"
+    },
+    "angularjs/angular-mocks.d.ts": {
+      "commit": "81d739cd5a3b367502dbcb7453a1b594bf95b8e3"
     }
   }
 }

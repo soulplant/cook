@@ -2,7 +2,6 @@
 
 import { Ingredient, IngredientList, Quantity, Section, Recipe } from './types';
 import { parseSections, parseRecipes } from './parser';
-export * from './parser';
 
 var app = angular.module('app', []);
 

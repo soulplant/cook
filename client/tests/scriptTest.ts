@@ -1,3 +1,4 @@
+/// <reference path="typings/angularjs/angular-mocks.d.ts" />
 
 import { getIngredientList, formatQuantity } from '../src/script';
 import { parseRecipes } from '../src/parser';
@@ -54,4 +55,21 @@ describe('List Construction', function() {
     expect(getQuantity('garlic', ingredients)).toEqual([[2.5, 'clove']]);
     expect(getQuantity('salt', ingredients)).toEqual([]);
   });
-})
+});
+
+describe('AppCtrl', function() {
+  beforeEach(() => angular.mock.module('app'));
+  var $controller = null;
+  var $rootScope = null;
+  beforeEach(angular.mock.inject(function($injector) {
+    $controller = $injector.get('$controller');
+    $rootScope = $injector.get('$rootScope');
+  }));
+
+  it('loads the controller', () => {
+    expect($controller).not.toBe(null);
+    var scope = $rootScope.$new();
+    var ctrl = $controller('AppCtrl', {$scope: scope});
+    expect(scope.enabled.length).toBe(0);
+  });
+});
