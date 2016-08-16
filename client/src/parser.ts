@@ -89,14 +89,17 @@ export class IngredientParser {
       return null;
     }
     var number = undefined;
-    var measurement = undefined;
     if (/^[0-9\/]+$/.test(words[0])) {
       number = parseNumber(words[0]);
+      if (isNaN(number)) {
+        throw "failed to parse '" + line + "'";
+      }
       words = words.slice(1);
       if (words.length == 0) {
         return null;
       }
     }
+    var measurement = '';
     if (this.isMeasurement(words[0])) {
       measurement = words[0];
       words = words.slice(1);
@@ -106,7 +109,7 @@ export class IngredientParser {
     }
     var name = words.join(' ');
     var quantity: Quantity = [];
-    if (number !== undefined && measurement) {
+    if (number !== undefined) {
       quantity = [number, measurement];
     }
     return {

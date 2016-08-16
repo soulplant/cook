@@ -28,9 +28,10 @@ function tagIngredientWithSource(ingredient: Ingredient, recipe: Recipe): Ingred
 // [[250, 'g'], [200, 'g'], [1, 'bunch'], [2, 'bunch'], [], []]
 // ->
 // [[450, 'g'], [3, 'bunch']]]
-function mergeQuantities(quantitiesList: Quantity[]): Quantity[] {
+// Visible for testing.
+export function mergeQuantities(quantities: Quantity[]): Quantity[] {
   var m = {};
-  quantitiesList.forEach(function(q) {
+  quantities.forEach(function(q) {
     if (q.length == 0) {
       return;
     }
@@ -48,7 +49,8 @@ function mergeQuantities(quantitiesList: Quantity[]): Quantity[] {
   return result;
 }
 
-function mergeIngredients(ingredients : Ingredient[]): IngredientList[] {
+// Visibile for testing.
+export function mergeIngredients(ingredients : Ingredient[]): IngredientList[] {
   var byName: {[name: string]: Ingredient[]} = {};
   ingredients.forEach(function(i) {
     var existing = byName[i.name];
