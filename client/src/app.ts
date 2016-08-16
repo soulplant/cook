@@ -91,14 +91,35 @@ export function getIngredientList(recipes: Recipe[]): IngredientList[] {
   return mergeIngredients(result);
 }
 
-app.controller('AppCtrl', function($scope, $http, $q) {
+interface AppScope extends angular.IScope {
+  // The recipes listed in the main view.
+  recipes: Recipe[];
+
+  // The ids of recipes that are enabled.
+  enabled: number[];
+
+  // Whether each ingredient should show the recipes it is from.
+  showSource: boolean;
+
+  // Which recipes are marked for inclusion in the shopping list.
+  selectedRecipes: Recipe[];
+
+  // The list of ingredients in the shopping list.
+  // TODO: Create a type to represent this. Currently it's either a header or
+  // an ingredient.
+  ingredients: any[];
+
+  aisleLookup: any;
+}
+
+app.controller('AppCtrl', function($scope: AppScope, $http, $q) {
   function fetch(name) {
     return $http.get('/data/' + name + '.txt').then(function(response) {
       return response.data;
     });
   }
 
-  var listMaker = null;
+  var listMaker: ListMaker = null;
 
   var fetches = [
     fetch('recipes'),
@@ -108,9 +129,9 @@ app.controller('AppCtrl', function($scope, $http, $q) {
   $q.all(fetches).then(function(responses) {
     var recipeText = responses[0];
     var measurementsText = responses[1];
-    var aisles = responses[2];
+    var aislesText = responses[2];
     $scope.recipes = parseRecipes(recipeText, measurementsText);
-    listMaker = new ListMaker($scope.recipes, aisles);
+    listMaker = new ListMaker($scope.recipes, aislesText);
     refreshList();
   });
   $scope.recipes = [];
