@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import { Ingredient, IngredientList, Quantity, Section, Recipe } from './types';
+import { Ingredient, IngredientList, Quantity, Section, Recipe, ShoppingListRow } from './types';
 import { parseSections, parseRecipes } from './parser';
 
 
@@ -27,9 +27,8 @@ export class ListMaker {
     });
   }
 
-  // TODO: Fix the types here.
-  makeList(ingredients: any[]): any[] {
-    var byAisle: {[name: string]: any[]} = {};
+  makeList(ingredients: IngredientList[]): ShoppingListRow[] {
+    var byAisle: {[name: string]: IngredientList[]} = {};
     for (var i = 0; i < ingredients.length; i++) {
       var aisle = this.aisles[ingredients[i].name];
       if (!aisle) {
@@ -40,35 +39,36 @@ export class ListMaker {
       }
       byAisle[aisle].push(ingredients[i]);
     }
-    var results = [];
+    var results: ShoppingListRow[] = [];
     for (var i = 0; i < this.aisleNames.length; i++) {
       var aisle = this.aisleNames[i];
       var ingredientsInAisle = byAisle[aisle];
-      if (ingredientsInAisle) {
-        ingredientsInAisle.sort(function(l, r) {
-          if (l.name < r.name) {
-            return 0;
-          } else if (l.name == r.name) {
-            return 0;
-          } else {
-            return 1;
-          }
-        });
-        results.push({name: aisle, header: true});
-        var self = this;
-        ingredientsInAisle.forEach(function(i) {
-          var shortNames = i.recipes.map(function(recipeId) {
-            return getShortName(self.recipes[recipeId].name);
-          });
-          i.note = '';
-          if (shortNames.length > 0) {
-            i.note = shortNames.join(', ');
-          }
-        });
-        results.push.apply(results, ingredientsInAisle);
+      if (!ingredientsInAisle) {
+        continue;
       }
+      ingredientsInAisle.sort(function(l, r) {
+        if (l.name < r.name) {
+          return 0;
+        } else if (l.name == r.name) {
+          return 0;
+        } else {
+          return 1;
+        }
+      });
+      results.push({header: aisle});
+      var self = this;
+      var rows = ingredientsInAisle.map(function(i) {
+        var shortNames = i.recipes.map(function(recipeId) {
+          return getShortName(self.recipes[recipeId].name);
+        });
+        var note = '';
+        if (shortNames.length > 0) {
+          note = shortNames.join(', ');
+        }
+        return {note: note, ingredientList: i};
+      });
+      results.push.apply(results, rows);
     }
-    // Array.<{name: string, header: ?bool, quantities: ?Array<{0: int, 1: string}>}>
     return results;
   };
 }

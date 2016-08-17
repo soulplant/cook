@@ -59,8 +59,9 @@ input[type=checkbox] {
   </div>
   <ul class="ingredient-list">
     <li ng-repeat="i in ingredients" ng-class="{top: $first, header: i.header}">
-    <span ng-show="i.header">=</span>{{i.quantities | quantityList}} {{i.name}}<span ng-show="i.header"> =</span><span class="source label"> {{showSource && !i.header ? '[' + i.note + ']' : ''}}</span>
+    <span ng-show="i.header">=</span>{{i.ingredientList.quantities | quantityList}} {{i.header ? i.header : i.ingredientList.name}}<span ng-show="i.header"> =</span><span class="source label"> {{showSource && !i.header ? '[' + i.note + ']' : ''}}</span>
     </li>
+    <!-- TODO: Move this logic into code -->
     <li ng-show="selectedRecipes.length > 0 && showSource" class="header">
       = Recipes =
     </li>
