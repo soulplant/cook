@@ -93,6 +93,7 @@ export function getIngredientList(recipes: Recipe[]): IngredientList[] {
   return mergeIngredients(result);
 }
 
+// The scope that AppCtrl exists within.
 interface AppScope extends angular.IScope {
   // The recipes listed in the main view.
   recipes: Recipe[];
