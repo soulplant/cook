@@ -1,5 +1,4 @@
-src/typings/*
-tests/typings/*
+typings/*
 
 src/*.bundle.js
 tests/*.bundle.js

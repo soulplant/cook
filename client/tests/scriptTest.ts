@@ -1,4 +1,4 @@
-/// <reference path="typings/tsd.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
 import { getIngredientList, formatQuantity } from '../src/app';
 import { parseRecipes, IngredientParser } from '../src/parser';

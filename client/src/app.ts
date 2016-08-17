@@ -1,4 +1,4 @@
-/// <reference path="typings/tsd.d.ts" />
+/// <reference path="../typings/tsd.d.ts" />
 
 import { parseSections, parseRecipes } from './parser';
 import { ListMaker, getShortName } from './listmaker';
