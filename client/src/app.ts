@@ -6,6 +6,46 @@ import { Ingredient, IngredientList, Quantity, Section, Recipe, ShoppingListRow 
 
 var app = angular.module('app', []);
 
+interface RecipeData {
+  recipesText: string;
+  measurementsText: string;
+  aislesText: string;
+}
+
+class DataFetcher {
+  $http: any;
+  $q: any;
+
+  constructor($http, $q) {
+    this.$http = $http;
+    this.$q = $q;
+  }
+
+  private fetch(name) {
+    return this.$http.get('/data/' + name + '.txt').then(function(response) {
+      return response.data;
+    });
+  }
+
+  // TODO: Annotate the return type.
+  public fetchAll() {
+    var fetches = [
+      this.fetch('recipes'),
+      this.fetch('measurements'),
+      this.fetch('aisles')
+    ];
+    return this.$q.all(fetches).then(function(data) {
+      return {
+        recipesText: data[0],
+        measurementsText: data[1],
+        aislesText: data[2],
+      };
+    });
+  }
+}
+
+app.service('DataFetcher', DataFetcher);
+
 // The scope that AppCtrl exists within.
 interface AppScope extends angular.IScope {
   // The recipes listed in the main view.
@@ -28,26 +68,11 @@ interface AppScope extends angular.IScope {
   aisleLookup: any;
 }
 
-app.controller('AppCtrl', function($scope: AppScope, $http, $q) {
-  function fetch(name) {
-    return $http.get('/data/' + name + '.txt').then(function(response) {
-      return response.data;
-    });
-  }
-
+app.controller('AppCtrl', function($scope: AppScope, DataFetcher) {
   var listMaker: ListMaker = null;
-
-  var fetches = [
-    fetch('recipes'),
-    fetch('measurements'),
-    fetch('aisles')
-  ];
-  $q.all(fetches).then(function(responses) {
-    var recipeText = responses[0];
-    var measurementsText = responses[1];
-    var aislesText = responses[2];
-    $scope.recipes = Parser.parseRecipes(recipeText, measurementsText);
-    listMaker = new ListMaker(Parser.parseAisles(aislesText));
+  DataFetcher.fetchAll().then(function(data) {
+    $scope.recipes = Parser.parseRecipes(data.recipesText, data.measurementsText);
+    listMaker = new ListMaker(Parser.parseAisles(data.aislesText));
     refreshList();
   });
   $scope.recipes = [];
@@ -121,4 +146,19 @@ app.filter('shortRecipeName', function() {
   return function(recipe) {
     return getShortName(recipe.name);
   };
+});
+
+app.controller('RecipeBuilderCtrl', function($scope, DataFetcher) {
+  $scope.debug = '<nothing to debug>';
+  $scope.recipeText = '';
+  DataFetcher.fetchAll().then(function(data: RecipeData) {
+    $scope.$watch('recipesText', function(recipesText) {
+      if (!recipesText) {
+        return;
+      }
+      var recipes = Parser.parseRecipes(recipesText, data.measurementsText);
+      $scope.debug = JSON.stringify(recipes[0].ingredients);
+      $scope.ingredients = recipes[0].ingredients;
+    });
+  });
 });

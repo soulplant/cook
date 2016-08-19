@@ -1,0 +1,11 @@
+.builder-recipe-input {
+  width: 40%;
+  height: 100%;
+  display: inline-block;
+}
+
+.output {
+  width: 40%;
+  height: 100%;
+  display: inline-block;
+}

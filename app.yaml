@@ -8,6 +8,18 @@ handlers:
     static_files: client/index.html
     upload: client/index.html
 
+  - url: /builder
+    static_files: client/builder.html
+    upload: client/builder.html
+
+  - url: /style.css
+    static_files: client/style.css
+    upload: client/style.css
+
+  - url: /builder.css
+    static_files: client/builder.css
+    upload: client/builder.css
+
   - url: /src/
     static_dir: client/src
 

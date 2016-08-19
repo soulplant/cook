@@ -9,7 +9,6 @@ export class ListMaker {
   // What aisles ingredients are in.
   aislesByIngredient: {[ingredient: string]: string};
 
-
   constructor(aisles: Aisle[]) {
     this.aisleNames = aisles.map(function(aisle) { return aisle.name; });
     this.aisleNames.push('Other');

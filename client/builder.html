@@ -1,0 +1,12 @@
+<script src="bower_components/angular/angular.js"></script>
+<script src="src/app.bundle.js"></script>
+<link rel="stylesheet" href="style.css"></link>
+<link rel="stylesheet" href="builder.css"></link>
+
+<body ng-app="app" ng-controller="RecipeBuilderCtrl">
+  <textarea class="builder-recipe-input" ng-model="recipesText"></textarea>
+  <textarea class="output" disabled>{{debug}}</textarea>
+  <ul>
+    <li ng-repeat="ingredient in ingredients">{{ingredient.name}}</li>
+  </ul>
+</body>
