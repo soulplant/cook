@@ -2,7 +2,8 @@ module.exports = {
   entry: {
     parserTest: './parserTest.ts',
     scriptTest: './scriptTest.ts',
-    appTest: './appTest.ts'
+    appTest: './appTest.ts',
+    listmakerTest: './listmakerTest.ts'
   },
   output: {
     filename: '[name].bundle.js'

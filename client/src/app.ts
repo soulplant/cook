@@ -6,93 +6,6 @@ import { Ingredient, IngredientList, Quantity, Section, Recipe } from './types';
 
 var app = angular.module('app', []);
 
-function uniq(xs : number[]): number[] {
-  var m: {[word: number]: number} = {};
-  for (var i = 0; i < xs.length; i++) {
-    m[xs[i]] = xs[i];
-  }
-  var result: number[] = [];
-  for (var key in m) {
-    result.push(m[key]);
-  }
-  result.sort();
-  return result;
-}
-
-function tagIngredientWithSource(ingredient: Ingredient, recipe: Recipe): Ingredient {
-  var copy = angular.copy(ingredient);
-  copy.recipe = recipe.id;
-  return copy;
-}
-
-// [[250, 'g'], [200, 'g'], [1, 'bunch'], [2, 'bunch'], [], []]
-// ->
-// [[450, 'g'], [3, 'bunch']]]
-// Visible for testing.
-export function mergeQuantities(quantities: Quantity[]): Quantity[] {
-  var m = {};
-  quantities.forEach(function(q) {
-    if (q.length == 0) {
-      return;
-    }
-    var name = q[1] || '';
-    var count = q[0];
-    if (m[name] === undefined) {
-      m[name] = [0, name];
-    }
-    m[name][0] += q[0];
-  });
-  var result = [];
-  for (var k in m) {
-    result.push([m[k][0], k]);
-  }
-  return result;
-}
-
-// Visibile for testing.
-export function mergeIngredients(ingredients : Ingredient[]): IngredientList[] {
-  var byName: {[name: string]: Ingredient[]} = {};
-  ingredients.forEach(function(i) {
-    var existing = byName[i.name];
-    if (byName[i.name] == undefined) {
-      byName[i.name] = [];
-    }
-    byName[i.name].push(i);
-  });
-  var result: IngredientList[] = [];
-  for (var name in byName) {
-    var ingredientList = byName[name];
-    var qs = ingredientList.map(function(i) {
-      return i.quantity;
-    });
-    var recipes = ingredientList.map(function(i) {
-      return i.recipe;
-    });
-    result.push({
-      name: name,
-      quantities: qs,
-      recipes: recipes,
-    });
-  }
-  return result.map(function(r) {
-    return {
-      name: r.name,
-      quantities: mergeQuantities(r.quantities),
-      recipes: uniq(r.recipes),
-    };
-  });
-}
-
-export function getIngredientList(recipes: Recipe[]): IngredientList[] {
-  var result = [];
-  recipes.forEach(function(recipe) {
-    recipe.ingredients.forEach(function(ingredient) {
-      result.push(tagIngredientWithSource(ingredient, recipe));
-    });
-  });
-  return mergeIngredients(result);
-}
-
 // The scope that AppCtrl exists within.
 interface AppScope extends angular.IScope {
   // The recipes listed in the main view.
@@ -158,7 +71,7 @@ app.controller('AppCtrl', function($scope: AppScope, $http, $q) {
         $scope.selectedRecipes.push(recipe);
       }
     });
-    $scope.ingredients = listMaker.makeList(getIngredientList($scope.selectedRecipes));
+    $scope.ingredients = listMaker.makeList($scope.selectedRecipes);
   }
 });
 
