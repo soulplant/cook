@@ -10,6 +10,7 @@ export class ListMaker {
   // What aisles ingredients are in.
   aisles: {[ingredient: string]: string};
 
+  // TODO: Make a type to represent aisles and pass that in here.
   constructor(aislesText: string) {
     var sections = parseSections(aislesText);
     this.aisleNames = sections.map(function(section) { return section.header; });
@@ -59,9 +60,10 @@ export class ListMaker {
       });
       results.push({header: aisle});
       var self = this;
+      var recipeMap = ListMaker.makeRecipeMap(recipes);
       var rows = ingredientsInAisle.map(function(i) {
         var shortNames = i.recipes.map(function(recipeId) {
-          return getShortName(recipes[recipeId].name);
+          return getShortName(recipeMap[recipeId].name);
         });
         var note = '';
         if (shortNames.length > 0) {
@@ -73,6 +75,15 @@ export class ListMaker {
     }
     return results;
   };
+
+  private static makeRecipeMap(recipes: Recipe[]): {[id: number]: Recipe} {
+    var result: {[id: number]: Recipe} = {};
+    for (var i = 0; i < recipes.length; i++) {
+      var recipe = recipes[i];
+      result[recipe.id] = recipe;
+    }
+    return result;
+  }
 
   static getIngredientList(recipes: Recipe[]): IngredientList[] {
     var result = [];
