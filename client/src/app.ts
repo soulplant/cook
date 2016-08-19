@@ -47,7 +47,7 @@ app.controller('AppCtrl', function($scope: AppScope, $http, $q) {
     var measurementsText = responses[1];
     var aislesText = responses[2];
     $scope.recipes = parseRecipes(recipeText, measurementsText);
-    listMaker = new ListMaker($scope.recipes, aislesText);
+    listMaker = new ListMaker(aislesText);
     refreshList();
   });
   $scope.recipes = [];

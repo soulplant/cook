@@ -5,14 +5,12 @@ import { parseSections, parseRecipes } from './parser';
 
 // Makes shopping lists out of lists of recipes.
 export class ListMaker {
-  recipes: Recipe[];
   aisleNames: string[];
 
   // What aisles ingredients are in.
   aisles: {[ingredient: string]: string};
 
-  constructor(recipes: Recipe[], aislesText: string) {
-    this.recipes = recipes;
+  constructor(aislesText: string) {
     var sections = parseSections(aislesText);
     this.aisleNames = sections.map(function(section) { return section.header; });
     this.aisleNames.push('Other');
@@ -28,10 +26,10 @@ export class ListMaker {
   }
 
   makeList(recipes: Recipe[]): ShoppingListRow[] {
-    return this.makeListFromIngredients(ListMaker.getIngredientList(recipes));
+    return this.makeListFromIngredients(recipes, ListMaker.getIngredientList(recipes));
   }
 
-  makeListFromIngredients(ingredients: IngredientList[]): ShoppingListRow[] {
+  makeListFromIngredients(recipes: Recipe[], ingredients: IngredientList[]): ShoppingListRow[] {
     var byAisle: {[name: string]: IngredientList[]} = {};
     for (var i = 0; i < ingredients.length; i++) {
       var aisle = this.aisles[ingredients[i].name];
@@ -63,7 +61,7 @@ export class ListMaker {
       var self = this;
       var rows = ingredientsInAisle.map(function(i) {
         var shortNames = i.recipes.map(function(recipeId) {
-          return getShortName(self.recipes[recipeId].name);
+          return getShortName(recipes[recipeId].name);
         });
         var note = '';
         if (shortNames.length > 0) {
