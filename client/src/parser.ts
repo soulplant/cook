@@ -70,19 +70,14 @@ export function parseRecipes(recipesText: string, measurementsText: string): Rec
 
   var recipes: Recipe[] = [];
   for (var i = 0; i < sections.length; i++) {
-    // TODO: Convert parser to a class so we know the type of
-    // parser.parseIngredient and can avoid this indirection.
-    var parseIngredient: (line: string) => Ingredient =
-        function(line: string): Ingredient {
-          return parser.parseIngredient(line);
-        };
+    var parseIngredient: (line: string) => Ingredient = parser.parseIngredient.bind(parser);
+    var f = parser.parseIngredient;
     recipes.push({
       id: i,
       name: sections[i].header,
       ingredients: sections[i].parts[1].map(parseIngredient),
     });
   }
-
   return recipes;
 }
 
