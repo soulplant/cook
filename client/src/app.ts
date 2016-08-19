@@ -2,7 +2,7 @@
 
 import { Parser } from './parser';
 import { ListMaker, getShortName } from './listmaker';
-import { Ingredient, IngredientList, Quantity, Section, Recipe } from './types';
+import { Ingredient, IngredientList, Quantity, Section, Recipe, ShoppingListRow } from './types';
 
 var app = angular.module('app', []);
 
@@ -23,7 +23,7 @@ interface AppScope extends angular.IScope {
   // The list of ingredients in the shopping list.
   // TODO: Create a type to represent this. Currently it's either a header or
   // an ingredient.
-  ingredients: any[];
+  ingredients: ShoppingListRow[];
 
   aisleLookup: any;
 }
@@ -56,8 +56,6 @@ app.controller('AppCtrl', function($scope: AppScope, $http, $q) {
   $scope.showSource = false;
 
   $scope.aisleLookup = {};
-
-  // Array.<{name: string, quantities: Array.<{0: int, 1: string}>, recipe: int}>
   $scope.ingredients = [];
   $scope.$watch('enabled', refreshList, true);
 
