@@ -18,9 +18,7 @@ interface AppScope extends angular.IScope {
   // Which recipes are marked for inclusion in the shopping list.
   selectedRecipes: Recipe[];
 
-  // The list of ingredients in the shopping list.
-  // TODO: Create a type to represent this. Currently it's either a header or
-  // an ingredient.
+  // The rows of a shopping list for the selected recipes.
   ingredients: ShoppingListRow[];
 
   aisleLookup: any;
