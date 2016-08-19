@@ -89,10 +89,16 @@ export class ListMaker {
     var result = [];
     recipes.forEach(function(recipe) {
       recipe.ingredients.forEach(function(ingredient) {
-        result.push(tagIngredientWithSource(ingredient, recipe));
+        result.push(ListMaker.tagIngredientWithSource(ingredient, recipe));
       });
     });
     return ListMaker.mergeIngredients(result);
+  }
+
+  private static tagIngredientWithSource(ingredient: Ingredient, recipe: Recipe): Ingredient {
+    var copy = angular.copy(ingredient);
+    copy.recipe = recipe.id;
+    return copy;
   }
 
   // Visibile for testing.
@@ -124,9 +130,22 @@ export class ListMaker {
       return {
         name: r.name,
         quantities: ListMaker.mergeQuantities(r.quantities),
-        recipes: uniq(r.recipes),
+        recipes: ListMaker.uniq(r.recipes),
       };
     });
+  }
+
+  private static uniq(xs : number[]): number[] {
+    var m: {[word: number]: number} = {};
+    for (var i = 0; i < xs.length; i++) {
+      m[xs[i]] = xs[i];
+    }
+    var result: number[] = [];
+    for (var key in m) {
+      result.push(m[key]);
+    }
+    result.sort();
+    return result;
   }
 
   // [[250, 'g'], [200, 'g'], [1, 'bunch'], [2, 'bunch'], [], []]
@@ -178,23 +197,4 @@ export function getShortName(string: string): string {
   }).map(function(word) {
     return word.charAt(0);
   }).join('');
-}
-
-function tagIngredientWithSource(ingredient: Ingredient, recipe: Recipe): Ingredient {
-  var copy = angular.copy(ingredient);
-  copy.recipe = recipe.id;
-  return copy;
-}
-
-function uniq(xs : number[]): number[] {
-  var m: {[word: number]: number} = {};
-  for (var i = 0; i < xs.length; i++) {
-    m[xs[i]] = xs[i];
-  }
-  var result: number[] = [];
-  for (var key in m) {
-    result.push(m[key]);
-  }
-  result.sort();
-  return result;
 }
