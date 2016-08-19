@@ -1,3 +1,5 @@
+/// <reference path="../../typings/tsd.d.ts" />
+
 export interface Data {
   recipesText: string;
   measurementsText: string;
