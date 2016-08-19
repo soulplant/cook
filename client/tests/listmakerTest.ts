@@ -1,4 +1,4 @@
-import { getIngredientList, mergeQuantities, mergeIngredients } from '../src/listmaker';
+import { ListMaker } from '../src/listmaker';
 import { parseRecipes } from '../src/parser';
 
 var recipesText = [
@@ -37,7 +37,7 @@ function getQuantity(name, ingredients) {
 describe('List Construction', function() {
   var recipes = parseRecipes(recipesText, measurementsText);
   it('Compiles a list of ingredients correctly', function() {
-    var ingredients = getIngredientList(recipes);
+    var ingredients = ListMaker.getIngredientList(recipes);
     expect(ingredients.length).toEqual(5);
     // TODO: Add a test for multiple measures of the same ingredient.
     expect(getQuantity('tomato', ingredients)).toEqual([[2, '']]);
@@ -48,7 +48,7 @@ describe('List Construction', function() {
 });
 describe('mergeQuantities', function() {
   it('merges unnamed ingredients correctly', function() {
-    expect(mergeQuantities([[2, '']])).toEqual([[2, '']]);
+    expect(ListMaker.mergeQuantities([[2, '']])).toEqual([[2, '']]);
   });
 });
 
@@ -58,7 +58,7 @@ describe('mergeIngredients', function() {
       name: 'egg',
       quantity: [2, ''],
     };
-    var il = mergeIngredients([eggs, eggs]);
+    var il = ListMaker.mergeIngredients([eggs, eggs]);
     expect(il[0].quantities).toEqual([[4, '']]);
   })
 });
