@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import { parseSections, parseRecipes, parseAisles } from './parser';
+import { Parser } from './parser';
 import { ListMaker, getShortName } from './listmaker';
 import { Ingredient, IngredientList, Quantity, Section, Recipe } from './types';
 
@@ -46,8 +46,8 @@ app.controller('AppCtrl', function($scope: AppScope, $http, $q) {
     var recipeText = responses[0];
     var measurementsText = responses[1];
     var aislesText = responses[2];
-    $scope.recipes = parseRecipes(recipeText, measurementsText);
-    listMaker = new ListMaker(parseAisles(aislesText));
+    $scope.recipes = Parser.parseRecipes(recipeText, measurementsText);
+    listMaker = new ListMaker(Parser.parseAisles(aislesText));
     refreshList();
   });
   $scope.recipes = [];

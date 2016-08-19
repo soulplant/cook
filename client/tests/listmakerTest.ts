@@ -1,5 +1,5 @@
 import { ListMaker } from '../src/listmaker';
-import { parseRecipes } from '../src/parser';
+import { Parser } from '../src/parser';
 
 var recipesText = [
   '= Tomato Soup =',
@@ -35,7 +35,7 @@ function getQuantity(name, ingredients) {
 }
 
 describe('List Construction', function() {
-  var recipes = parseRecipes(recipesText, measurementsText);
+  var recipes = Parser.parseRecipes(recipesText, measurementsText);
   it('Compiles a list of ingredients correctly', function() {
     var ingredients = ListMaker.getIngredientList(recipes);
     expect(ingredients.length).toEqual(5);
