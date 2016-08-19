@@ -4,6 +4,15 @@ function trimHeader(str: string): string {
   return str.substring(1, str.length - 1).trim();
 }
 
+// A section is a header followed by multiple runs of non-empty lines.
+// For example:
+//
+// = Heading =
+// Part1
+// Part1
+//
+// Part2
+// Part2
 export function parseSections(text: string): Section[] {
   if (!text) {
     return;
