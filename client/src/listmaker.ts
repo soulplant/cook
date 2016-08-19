@@ -1,7 +1,7 @@
 /// <reference path="../typings/tsd.d.ts" />
 
 import { Ingredient, IngredientList, Quantity, Section, Recipe, ShoppingListRow } from './types';
-import { parseSections, parseRecipes } from './parser';
+import { parseSections } from './parser';
 
 // Makes shopping lists out of lists of recipes.
 export class ListMaker {
