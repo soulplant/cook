@@ -19,7 +19,7 @@ interface AppScope extends angular.IScope {
   selectedRecipes: Recipe[];
 
   // The rows of a shopping list for the selected recipes.
-  ingredients: ShoppingListRow[];
+  shoppingListRows: ShoppingListRow[];
 
   aisleLookup: any;
 }
@@ -38,7 +38,7 @@ export class AppCtrl {
     $scope.showSource = false;
 
     $scope.aisleLookup = {};
-    $scope.ingredients = [];
+    $scope.shoppingListRows = [];
     $scope.$watch('enabled', refreshList, true);
 
     function refreshList() {
@@ -51,7 +51,7 @@ export class AppCtrl {
           $scope.selectedRecipes.push(recipe);
         }
       });
-      $scope.ingredients = listMaker.makeList($scope.selectedRecipes);
+      $scope.shoppingListRows = listMaker.makeList($scope.selectedRecipes);
     }
   }
 }

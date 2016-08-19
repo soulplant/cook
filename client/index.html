@@ -13,10 +13,10 @@
     </div>
   </div>
   <ul class="ingredient-list">
-    <li ng-repeat="i in ingredients" ng-class="{top: $first, header: i.header}">
-      <span ng-if="i.header">= {{i.header}} =</span>
-      <span ng-if="!i.header">{{i.ingredientList.quantities | quantityList}} {{i.ingredientList.name}}</span>
-      <span ng-if="!i.header && showSource" class="source label">[{{i.note}}]</span>
+    <li ng-repeat="row in shoppingListRows" ng-class="{top: $first, header: row.header}">
+      <span ng-if="row.header">= {{row.header}} =</span>
+      <span ng-if="!row.header">{{row.ingredientList.quantities | quantityList}} {{row.ingredientList.name}}</span>
+      <span ng-if="!row.header && showSource" class="source label">[{{row.note}}]</span>
     </li>
     <li ng-show="selectedRecipes.length > 0 && showSource" class="header">
       = Recipes =
