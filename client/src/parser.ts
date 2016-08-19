@@ -83,16 +83,17 @@ export function parseRecipes(recipesText: string, measurementsText: string): Rec
 
 // Visible for testing.
 export class IngredientParser {
-  measurements: string[];
-  constructor(measurements: string[]) {
+  private measurements: string[];
+
+  public constructor(measurements: string[]) {
     this.measurements = measurements;
   }
 
-  isMeasurement(word: string): boolean {
+  private isMeasurement(word: string): boolean {
     return this.measurements.indexOf(word) != -1;
   }
 
-  parseIngredient(line: string): Ingredient {
+  public parseIngredient(line: string): Ingredient {
     if (line == '') {
       return null;
     }
