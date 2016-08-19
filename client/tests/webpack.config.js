@@ -1,6 +1,6 @@
 module.exports = {
   entry: {
-    parseTest: './parseTest.ts',
+    parserTest: './parserTest.ts',
     scriptTest: './scriptTest.ts',
     appTest: './appTest.ts'
   },

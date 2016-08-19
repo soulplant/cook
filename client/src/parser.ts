@@ -4,53 +4,61 @@ function trimHeader(str: string): string {
   return str.substring(1, str.length - 1).trim();
 }
 
-// A section is a header followed by multiple runs of non-empty lines.
+// Returns true if the line represents a section header.
+function isHeader(line: string): boolean {
+  return line.charAt(0) == '=';
+}
+
+// A section is a header followed by one or more runs of non-empty lines.
+//
 // For example:
 //
-// = Heading =
+// = Section Header =
 // Part1
 // Part1
 //
 // Part2
 // Part2
+//
+// This function parses runs of sections delimited by double newlines.
 export function parseSections(text: string): Section[] {
   if (!text) {
     return;
   }
   var lines = text.split('\n');
   var sections = [];
-  var i = 0;
-  while (true) {
-    while (i < lines.length && lines[i].charAt(0) != '=') {
-      i++;
-    }
-    if (i >= lines.length) {
-      break;
-    }
-    var section: Section = {
-      header: trimHeader(lines[i]),
-      parts: [],
-    };
-    i++;
+  var section: Section = null;
+  var part: string[] = [];
+  for (var i in lines) {
+    var line = lines[i];
+    if (section != null) {
+      if (line.length > 0) {
+        part.push(line);
+        continue;
+      }
+      // Line is empty so we are done with this part.
 
-    while (true) {
-      var buf = [];
-      while (i < lines.length && lines[i] != '') {
-        buf.push(lines[i]);
-        i++;
+      // Part is empty, this means this is the second empty line we've
+      // encountered in a row, so we're done with this section.
+      if (part.length == 0) {
+        sections.push(section);
+        section = null;
+      } else {
+        section.parts.push(part);
+        part = [];
       }
-      section.parts.push(buf);
-      if (i >= lines.length) {
-        break;
-      }
-      i++;
-      if (i >= lines.length) {
-        break;
-      }
-      if (lines[i] == '') {
-        break;
-      }
+    } else {
+      part.push(line);
     }
+    if (isHeader(line)) {
+      section = {header: trimHeader(line), parts: []};
+      part = [];
+    }
+  }
+  if (part.length > 0) {
+    section.parts.push(part);
+  }
+  if (section != null) {
     sections.push(section);
   }
   return sections;

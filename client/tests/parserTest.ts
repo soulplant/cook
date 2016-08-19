@@ -1,6 +1,6 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import { parseNumber, IngredientParser, parseRecipes } from '../src/parser';
+import { parseNumber, IngredientParser, parseRecipes, parseSections } from '../src/parser';
 
 describe('parseNumber', function() {
   it('handles halves', function() {
@@ -24,6 +24,32 @@ describe('Parser', function() {
     cases.forEach(function(c) {
       expect(parser.parseIngredient(c[0])).toEqual(c[1]);
     });
+  });
+});
+
+describe('parseSections', function() {
+  it('parses sections correctly', function() {
+    var sectionText = [
+      '= Section 1 =',
+      'Part1.1',
+      'Part1.2',
+      '',
+      'Part2.1',
+      '',
+      '',
+      '= Section 2 =',
+      'Part1.1',
+      'Part1.2',
+      '',
+      'Part2.1',
+    ].join('\n');
+
+    var sections = parseSections(sectionText);
+    expect(sections.length).toBe(2);
+    expect(sections[0].header).toEqual('Section 1');
+    expect(sections[0].parts.length).toEqual(2);
+    expect(sections[0].parts[0]).toEqual(['Part1.1', 'Part1.2']);
+    expect(sections[1].header).toEqual('Section 2');
   });
 });
 
