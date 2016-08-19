@@ -1,47 +1,46 @@
-// TODO: Add semicolons.
 export interface Ingredient {
-  name: string
-  quantity: Quantity
-  recipe?: number
+  name: string;
+  quantity: Quantity;
+  recipe?: number;
 }
 
 export interface IngredientList {
-  name: string
-  quantities: Quantity[]
-  recipes: number[]
+  name: string;
+  quantities: Quantity[];
+  recipes: number[];
 }
 
 export interface Recipe {
-  id: number
-  name: string
-  ingredients: Ingredient[]
+  id: number;
+  name: string;
+  ingredients: Ingredient[];
 }
 
 export interface Section {
-  header: string
-  parts: string[][]
+  header: string;
+  parts: string[][];
 }
 
 export interface Aisle {
   // Name of the aisle.
-  name: string
+  name: string;
 
   // Names of the ingredients that can be found in this aisle.
-  ingredientNames: string[]
+  ingredientNames: string[];
 }
 
 // A line in the shopping list.
 export interface ShoppingListRow {
   // The ingredient and its quantities.
-  ingredientList?: IngredientList
+  ingredientList?: IngredientList;
   // An arbitrary piece of text to accompany this row.
   // TODO: Replace this with the resolved list of recipes this row is
   // contributed by. Currently that is this field's only use.
-  note?: string
+  note?: string;
 
   // If this is set then this object represents a header in a shopping list.
   // The header will be rendered instead of any ingredient.
-  header?: string
+  header?: string;
 }
 
 // TODO: Make this a non-tuple type.
