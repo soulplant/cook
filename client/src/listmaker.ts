@@ -1,27 +1,25 @@
 /// <reference path="../typings/tsd.d.ts" />
 
-import { Ingredient, IngredientList, Quantity, Section, Recipe, ShoppingListRow } from './types';
-import { parseSections } from './parser';
+import { Ingredient, IngredientList, Quantity, Section, Recipe, ShoppingListRow, Aisle } from './types';
 
 // Makes shopping lists out of lists of recipes.
 export class ListMaker {
   aisleNames: string[];
 
   // What aisles ingredients are in.
-  aisles: {[ingredient: string]: string};
+  aislesByIngredient: {[ingredient: string]: string};
 
-  // TODO: Make a type to represent aisles and pass that in here.
-  constructor(aislesText: string) {
-    var sections = parseSections(aislesText);
-    this.aisleNames = sections.map(function(section) { return section.header; });
+
+  constructor(aisles: Aisle[]) {
+    this.aisleNames = aisles.map(function(aisle) { return aisle.name; });
     this.aisleNames.push('Other');
-    this.aisles = {};
+    this.aislesByIngredient = {};
 
     var self = this;
 
-    sections.forEach(function(section) {
-      section.parts[0].forEach(function(ingredient) {
-        self.aisles[ingredient] = section.header;
+    aisles.forEach(function(aisle) {
+      aisle.ingredientNames.forEach(function(ingredientName) {
+        self.aislesByIngredient[ingredientName] = aisle.name;
       });
     });
   }
@@ -33,7 +31,7 @@ export class ListMaker {
   makeListFromIngredients(recipes: Recipe[], ingredients: IngredientList[]): ShoppingListRow[] {
     var byAisle: {[name: string]: IngredientList[]} = {};
     for (var i = 0; i < ingredients.length; i++) {
-      var aisle = this.aisles[ingredients[i].name];
+      var aisle = this.aislesByIngredient[ingredients[i].name];
       if (!aisle) {
         aisle = 'Other';
       }

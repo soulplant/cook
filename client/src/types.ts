@@ -22,6 +22,14 @@ export interface Section {
   parts: string[][]
 }
 
+export interface Aisle {
+  // Name of the aisle.
+  name: string
+
+  // Names of the ingredients that can be found in this aisle.
+  ingredientNames: string[]
+}
+
 // A line in the shopping list.
 export interface ShoppingListRow {
   // The ingredient and its quantities.

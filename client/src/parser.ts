@@ -1,4 +1,6 @@
-import { Ingredient, IngredientList, Quantity, Section, Recipe } from './types';
+import { Ingredient, IngredientList, Quantity, Section, Recipe, Aisle } from './types';
+
+// TODO: Make a class and put the various parse* functions on it as static methods.
 
 function trimHeader(str: string): string {
   return str.substring(1, str.length - 1).trim();
@@ -79,6 +81,15 @@ export function parseRecipes(recipesText: string, measurementsText: string): Rec
     });
   }
   return recipes;
+}
+
+export function parseAisles(aislesText: string): Aisle[] {
+  var result: Aisle[] = [];
+  var sections = parseSections(aislesText);
+  sections.forEach(function(section) {
+    result.push({name: section.header, ingredientNames: section.parts[0]});
+  });
+  return result;
 }
 
 // Visible for testing.
