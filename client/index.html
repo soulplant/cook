@@ -2,26 +2,26 @@
 <script src="src/app.bundle.js"></script>
 <link rel="stylesheet" href="style.css"></link>
 
-<body ng-app="app" ng-controller="AppCtrl" style="font-family: monospace;">
+<body ng-app="app" ng-controller="AppCtrl as app" style="font-family: monospace;">
   <div class="recipe-list">
-    <div ng-repeat="recipe in recipes" class="recipe">
-      <label>{{recipe.name}}<input type="checkbox" ng-model="enabled[recipe.id]"></input></label>
+    <div ng-repeat="recipe in app.recipes" class="recipe">
+      <label>{{recipe.name}}<input type="checkbox" ng-model="app.enabled[recipe.id]"></input></label>
     </div>
     <br />
     <div class="recipe">
-      <label>Show source<input type="checkbox" ng-model="showSource"></input></label>
+      <label>Show source<input type="checkbox" ng-model="app.showSource"></input></label>
     </div>
   </div>
   <ul class="ingredient-list">
-    <li ng-repeat="row in shoppingListRows" ng-class="{top: $first, header: row.header}">
+    <li ng-repeat="row in app.shoppingListRows" ng-class="{top: $first, header: row.header}">
       <span ng-if="row.header">= {{row.header}} =</span>
       <span ng-if="!row.header">{{row.ingredientList.quantities | quantityList}} {{row.ingredientList.name}}</span>
-      <span ng-if="!row.header && showSource" class="source label">[{{row.note}}]</span>
+      <span ng-if="!row.header && app.showSource" class="source label">[{{row.note}}]</span>
     </li>
-    <li ng-show="selectedRecipes.length > 0 && showSource" class="header">
+    <li ng-show="app.selectedRecipes.length > 0 && app.showSource" class="header">
       = Recipes =
     </li>
-    <li ng-show="showSource" ng-repeat="r in selectedRecipes">
+    <li ng-show="app.showSource" ng-repeat="r in app.selectedRecipes">
       <span class="source">[{{r | shortRecipeName}}]</span> {{r.name}}
     </li>
   </ul>

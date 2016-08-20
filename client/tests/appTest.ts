@@ -13,6 +13,6 @@ describe('AppCtrl', function() {
     expect($controller).not.toBe(null);
     var scope = $rootScope.$new();
     var ctrl = $controller('AppCtrl', {$scope: scope});
-    expect(scope.enabled.length).toBe(0);
+    expect(ctrl.enabled.length).toBe(0);
   });
 });
