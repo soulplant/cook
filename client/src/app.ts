@@ -12,7 +12,7 @@ var app = angular.module('app', []);
 app.service('DataFetcher', DataFetcher);
 app.controller('AppCtrl', AppCtrl);
 
-export function formatQuantity(q) {
+export function formatQuantity(q: Quantity) {
   if (q.length == 0) {
     return "";
   }
